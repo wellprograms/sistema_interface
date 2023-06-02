@@ -1,0 +1,37 @@
+import mysql.connector
+
+def truncate_table_with_foreign_keys(connection, tabela='operador_caixa'):
+    try:
+        cursor = connection.cursor()
+
+        # Desabilitar temporariamente as restrições de chave estrangeira
+        cursor.execute("SET FOREIGN_KEY_CHECKS=0")
+
+        # Executar o truncamento da tabela
+        cursor.execute(f"TRUNCATE TABLE {tabela}")
+
+        # Reativar as restrições de chave estrangeira
+        cursor.execute("SET FOREIGN_KEY_CHECKS=1")
+
+        connection.commit()
+        print(f"Tabela {tabela} truncada com sucesso.")
+
+    except mysql.connector.Error as error:
+        print(f"Erro ao truncar tabela {tabela}: {error}")
+
+# Configuração da conexão com o banco de dados
+config = {
+    'user': 'root',
+    'password': 'well97',
+    'host': 'localhost',
+    'database': 'loja_bd'
+}
+
+# Estabelecendo conexão com o banco de dados
+connection = mysql.connector.connect(**config)
+
+# Chamada da função para truncar a tabela com chaves estrangeiras
+truncate_table_with_foreign_keys(connection)
+
+# Fechando a conexão com o banco de dados
+connection.close()
