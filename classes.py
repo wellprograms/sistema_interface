@@ -4,13 +4,16 @@ from decimal import Decimal
 
 
 class Loja:
+    # Init
+    # param nome : recebe nome da loja
+    # param endereco : recebe endereco da loja
     conexao = mysql.connector.connect(
     host='localhost',  # Endereço do servidor do banco de dados
     user='root',  # Nome de usuário do banco de dados
     password='well97',  # Senha do banco de dados
     database='loja_bd'  # Nome do banco de dados
     )
-
+    # Atributos:
     def __init__(self, nome, endereco):
         self.id_compra = 4
         self.nome = nome
@@ -23,7 +26,7 @@ class Loja:
         self.sistema = False
         self.operadora = None
 
-
+    # Funcao inicial exibe o menu do sistema
     def start_sistema(self):
         print("""       MENU
 [01] FUNCIONARIOS
@@ -32,7 +35,8 @@ class Loja:
 [04] CONFIGS""")
         print('-='*20)
 
-
+    """ Método pede para que o usuario escolha 1 opcao das apresentadas no método start_sistema
+    e chama outro método da instancia baseado na escolha do usuário"""
     def opcao_menu(self):
         opcao = int(input('Sua opcão: '))
         if opcao == 1:
@@ -45,8 +49,14 @@ class Loja:
             self.acao_estoque()
         elif opcao == 3:
             self.acao_sistema_caixa()
+        else:
+            return
 
 
+    """Método chama o método dados_produtos da class Estoque que retorna uma lista e exibe um dataframe dos produtos existentes no banco de dados.
+    O Método tambem pede uma acao do usuario, e com base na acao do usuario Altera, Exclui, ou Adiciona novos produtos no banco de dados
+    utilizando os métodos da Class Estoque, o usuario tambem tem a escolha de voltar ao menu inicial, que chama os métodos start_sistema e
+    opcao_menu"""
     def acao_estoque(self):
         acao = input('Deseja visualizar/modificar algum produto?')
         if acao == "sim":
@@ -102,8 +112,15 @@ class Loja:
             elif acao == 4:
                 self.start_sistema()
                 self.opcao_menu()
+            else:
+                return
 
 
+    """Método recebe o método dados_funcionarios que retorna uma lista e exibe um dataframe dos funcionarios existentes no banco de dados.
+    O método tambem pede uma acao do usuario, e com base na acao do usuario, Altera informacoes ou Adiciona funcionarios ao banco de dados.
+    O método só permite uma alteracao especifica de funcionario por vez, sendo necessario chamar o método novamente para cada alteracao.
+    O usuario também tem a escolha de retornar ao menu inicial, que chama os métodos start_sistema, e opcao_menu.
+    """
     def acao_funcionarios(self):
         acao = input('Deseja visualizar/modificar algum funcionario?')
         if acao == "sim":
@@ -151,6 +168,10 @@ class Loja:
                 self.opcao_menu()
         
 
+    """Método é basicamente um login, onde o usuário preenche as informacoes, e o método verifica atraves do atributo da instancia operadores
+    que recebe o metodo lista_operadores, se os dados inseridos forem correspondentes, o método atribui ao atributo operadora uma instancia da class
+    OperadorCaixa, altera o atributo sistema para True, e retorna que o sistema foi iniciado"""
+
     def acao_sistema_caixa(self):
         print('Faça login para iniciar o sistema.')
         nome = input('nome: ')
@@ -178,6 +199,8 @@ class Loja:
 
 
     def passar_produto(self, cod):
+        if self.sistema == False:
+            print('ERRO! Login nao efetuado.')
         cursor = self.conexao.cursor()
         id_compra = self.pegar_idcompra()
         if cod == 000:
@@ -186,7 +209,7 @@ class Loja:
             id_operador = self.operadora.id_operador
             id_vendedor = codigo_vendedor
             cursor.execute("INSERT INTO vendas (id_compra, id_operador, id_vendedor) VALUES (%s, %s, %s)",
-               (id_compra, id_operador, id_vendedor))
+            (id_compra, id_operador, id_vendedor))
             for produto in self.compras_passadas:
                 referencia = produto['referencia']
                 modelo = produto['modelo']
@@ -201,13 +224,12 @@ class Loja:
                 self.conexao.commit()
             self.compras_passadas.clear()
             
-            acao = int(input("[1] Nova compra - [2] Finalizar sistema - [3]Menu inicial"))
+            acao = int(input("[1] Nova compra - [2] Finalizar sistema "))
             if acao == 1:
                 cod = int(input('Codigo produto: '))
                 return self.passar_produto(cod)
             if acao == 2:
-                return 2
-            if acao == 3:
+                self.sistema = False
                 self.start_sistema()
                 self.opcao_menu()
 
@@ -223,6 +245,8 @@ class Loja:
         if not produto_encontrado:
             print('Produto inexistente. Tente novamente')
         print(self.total_compras)
+
+    
 
 
     def inserir_dados_loja(self):
