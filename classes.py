@@ -11,7 +11,7 @@ class Loja:
     host='localhost',  # Endereço do servidor do banco de dados
     user='root',  # Nome de usuário do banco de dados
     password='well97',  # Senha do banco de dados
-    database='loja_bd'  # Nome do banco de dados
+    database='db_sistema'  # Nome do banco de dados
     )
     # Atributos:
     def __init__(self, nome, endereco):
@@ -198,18 +198,28 @@ class Loja:
         return id_compra_atual + 1
 
 
-    def passar_produto(self, cod):
-        if self.sistema == False:
+    def passar_produto(self):
+        if not self.sistema:
             print('ERRO! Login nao efetuado.')
+            return
+        
         cursor = self.conexao.cursor()
+
         id_compra = self.pegar_idcompra()
+
+        cod = int(input('Código do produto: '))
+
         if cod == 000:
             codigo_vendedor = int(input('Digite o COD do Vendedor'))
             print(f'Compra finalizada. Valor total: {self.total_compras}')
-            id_operador = self.operadora.id_operador
+            operador_id = self.operadora.id_operador
             id_vendedor = codigo_vendedor
+
+            # Inserir a venda na tabela 'vendas'
             cursor.execute("INSERT INTO vendas (id_compra, id_operador, id_vendedor) VALUES (%s, %s, %s)",
-            (id_compra, id_operador, id_vendedor))
+            (id_compra, operador_id, id_vendedor))
+            self.conexao.commit()
+
             for produto in self.compras_passadas:
                 referencia = produto['referencia']
                 modelo = produto['modelo']
@@ -222,9 +232,11 @@ class Loja:
                             "VALUES (%s, %s, %s, %s, %s, %s)",
                             (id_compra, referencia, modelo, genero, quantidade, valor))
                 self.conexao.commit()
+
             self.compras_passadas.clear()
             
             acao = int(input("[1] Nova compra - [2] Finalizar sistema "))
+
             if acao == 1:
                 cod = int(input('Codigo produto: '))
                 return self.passar_produto(cod)
@@ -240,15 +252,14 @@ class Loja:
                 self.total_compras += Decimal(str(produto['valor']))
                 self.compras_passadas.append(produto)
                 produto_encontrado = True
-                continue
+                break # Break para sair do loop logo após encontrar o produto 
 
         if not produto_encontrado:
             print('Produto inexistente. Tente novamente')
+
         print(self.total_compras)
 
     
-
-
     def inserir_dados_loja(self):
         cursor = Loja.conexao.cursor()
         sql = f'INSERT INTO loja_dados(nome_loja, end_loja) VALUES ("{self.nome}", "{self.endereço}")'
@@ -258,23 +269,13 @@ class Loja:
 
     
     def adicionar_funcionario(self, funcionario):
-        cursor = Loja.conexao.cursor()
+        funcionario_id = funcionario.add_funcionario()
         if funcionario.funcao == 'Caixa':
-            id_cadastro = int(input('ID_OPERADOR: '))
-            login_cadastro = input('login: ')
-            senha_cadastro = input('senha: ')
-            cadastro_oc = OperadorCaixa(id_cadastro, funcionario.nome, login_cadastro, senha_cadastro)
-            saql = f'INSERT INTO operador_caixa(id_operador, nome, login, senha) VALUES ({cadastro_oc.id_operador}, "{cadastro_oc.nome}", "{cadastro_oc.login}", "{cadastro_oc.senha}")'
-            cursor.execute(saql)
-            print('Cadastro realizado com sucesso.')
-        sql = f'INSERT INTO funcionarios(nome, funcao, salario) VALUES ("{funcionario.nome}", "{funcionario.funcao}", {funcionario.salario})'
-        cursor.execute(sql)
-        Loja.conexao.commit()
-        print('Cadastro realizado com sucesso.')
-        self.acao_funcionarios()
+            login_cadastro = input('O funcionario é um OperadorDeCaixa, cadastre um login :')
+            senha_cadastro = input('Agora, uma senha: ')
+            funcionario.add_operador_caixa(login_cadastro, senha_cadastro, funcionario_id)
+        
 
-
-    
     def gerenciar_funcionarios(self, coluna, atual, novo):
         cursor = Loja.conexao.cursor()
         sql = f"UPDATE funcionarios SET {coluna} = %s WHERE nome = %s"
@@ -300,32 +301,54 @@ class Loja:
     
 
     def lista_operadores(self):
-        cursor = Loja.conexao.cursor()
-        sql = "SELECT id_operador, nome, login, senha FROM operador_caixa"
+        cursor = self.conexao.cursor()
+        sql = "SELECT nome, login, senha, id_operador FROM operador_caixa"
         cursor.execute(sql)
         resultado = cursor.fetchall()
         lista_dici = []
         dici_dados = {}
         for linha in resultado:
-            dici_dados['id_operador'] = linha[0]
-            dici_dados['nome'] = linha[1]
-            dici_dados['login'] = linha[2]
-            dici_dados['senha'] = linha[3]
+            dici_dados['nome'] = linha[0]
+            dici_dados['login'] = linha[1]
+            dici_dados['senha'] = linha[2]
+            dici_dados['id_operador'] = linha[3]
             lista_dici.append(dici_dados.copy())
         return lista_dici
 
 
-class Funcionario:
-    def __init__(self, nome, funcao):
-        self.salario = 1800.00
+class Funcionario(Loja):
+    def __init__(self, nome, funcao, salario, loja_id):
+        self.salario = salario
         self.nome = nome
         self.funcao = funcao 
-        self.vendas = []
+        self.loja_id = loja_id
 
-    def venda(self, valor):
-        self.vendas.append(valor)
+    def add_funcionario(self):
+        cursor = self.conexao.cursor()
+        add_funcionario_query = """
+    INSERT INTO funcionarios (nome, funcao, salario, loja_id)
+    VALUES (%s, %s, %s, %s)
+    """
+        cursor.execute(add_funcionario_query, (self.nome, self.funcao, self.salario, self.loja_id))
+        funcionario_id = cursor.lastrowid  # Obtém o ID do funcionário inserido
+        self.conexao.commit()
+        return funcionario_id
     
-
+    def add_operador_caixa(self, login, senha, funcionario_id):
+        if self.funcao == "Caixa":
+            cursor = self.conexao.cursor()
+            add_operador_caixa_query = """
+            INSERT INTO operador_caixa (nome, login, senha, id_operador)
+            VALUES (%s, %s, %s, %s)
+            """
+            values = (self.nome, login, senha, funcionario_id)
+            cursor.execute(add_operador_caixa_query, values)
+            self.conexao.commit()
+            print("Operador de caixa adicionado com sucesso.")
+        else:
+            print("A função do funcionário não é Caixa. Não é possível adicionar como operador de caixa.")
+        
+    
 class Estoque(Loja):
     def __init__(self):
         self.produtos = self.dados_produtos()
@@ -378,7 +401,7 @@ class Estoque(Loja):
     
 
 class OperadorCaixa(Loja):
-    def __init__(self,id_operador, nome, login, senha):
+    def __init__(self, id_operador, nome, login, senha):
         self.produtos_passados = []
         #cursor = Loja.conexao.cursor()
         self.nome = nome
@@ -391,11 +414,10 @@ class OperadorCaixa(Loja):
 
 
 class Vendedor(Loja):
-    def __init__(self, id_vendedor, nome_vendedor):
-        self.id_vendedor = id_vendedor
+    def __init__(self, nome_vendedor):
         self.nome_vendedor = nome_vendedor
         cursor = Loja.conexao.cursor()
-        sql = f'INSERT INTO vendedor (id_vendedor, nome_vendedor) VALUES ({self.id_vendedor},"{self.nome_vendedor}")'
+        sql = f'INSERT INTO vendedor (nome_vendedor) VALUES ("{self.nome_vendedor}")'
         cursor.execute(sql)
         Loja.conexao.commit()
 
