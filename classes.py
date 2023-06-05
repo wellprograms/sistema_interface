@@ -227,6 +227,7 @@ class Loja:
                 quantidade = produto['quantidade']
                 valor = produto['valor']
 
+                cursor.execute(self.estoque.diminuir_quantidade(referencia, 1))
                 # Executar a consulta de inserção na tabela 'produtos_venda'
                 cursor.execute("INSERT INTO produtos_venda (id_compra, referencia, modelo, genero, quantidade, valor) "
                             "VALUES (%s, %s, %s, %s, %s, %s)",
@@ -398,6 +399,13 @@ class Estoque(Loja):
         cursor.execute(sql, (valor,))
         self.conexao.commit()
         return
+
+    def diminuir_quantidade(self, referencia, quantidade):
+        cursor = self.conexao.cursor()
+        sql = f"UPDATE produtos SET quantidade = quantidade - {quantidade} WHERE referencia = {referencia}"
+        cursor.execute(sql)
+        self.conexao.commit()
+
     
 
 class OperadorCaixa(Loja):
