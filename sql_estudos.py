@@ -7,12 +7,12 @@ conn = mysql.connector.connect(
     host="localhost",
     user="root",
     password="well97",
-    database="loja_bd"
+    database="db_sistema"
 )
 cursor = conn.cursor()
 
 # Consultar todos os produtos associados à compra com o ID 1
-id_compra = 26
+id_compra = 20
 
 # SELECT row 1 : SELECIONANDO COLUNAS ESPECIFICAS DA TABELA produtos_venda
 
