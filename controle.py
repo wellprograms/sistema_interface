@@ -1,11 +1,38 @@
 from PyQt5 import uic, QtCore, QtWidgets
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
-
 from classes import *
-import pandas as pd
 
 loja = Loja('Ascona', 'vila-sabrina')
+
+class JanelaPrincipal(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("janela_menu.ui", self)
+        self.pushButton.clicked.connect(self.abrir_janela_funcionarios)
+        self.pushButton_2.clicked.connect(self.abrir_janela_estoque)
+        self.pushButton_3.clicked.connect(self.sistema_caixa)
+
+        self.janela_funcionarios = None
+        self.janela_estoque = None
+
+    def sistema_caixa(self):
+        pass
+
+    def abrir_janela_funcionarios(self):
+        if self.janela_estoque:
+            self.janela_estoque.close()
+        self.hide()
+        self.janela_funcionarios = JanelaFuncionarios(janela_principal)
+        self.janela_funcionarios.show()
+
+    def abrir_janela_estoque(self):
+        if self.janela_funcionarios:
+            self.janela_funcionarios.close()
+        self.hide()
+        self.janela_estoque = JanelaEstoque(janela_principal)
+        self.janela_estoque.show()
+
 
 class JanelaLogin(QtWidgets.QMainWindow):
     def __init__(self):
@@ -32,81 +59,76 @@ class JanelaLogin(QtWidgets.QMainWindow):
             self.fazer_login()
 
 
-class JanelaMenu(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        uic.loadUi("janela_menu.ui", self)
-        self.pushButton.clicked.connect(self.funcionarios)
-        self.pushButton_2.clicked.connect(self.estoque)
-
-    def funcionarios(self):
-        self.close()
-        janela_opcao.show()
-
-    def estoque(self):
-        self.close()
-        janela_estoque.show()
-
-
-class JanelaEstoque(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        uic.loadUi("tabela_estoque.ui", self)
-        produtos = loja.estoque.produtos
-        df=pd.DataFrame(produtos)
-
-        # Criar o modelo de item
-        model = QStandardItemModel()
-        model.setColumnCount(df.shape[1])
-
-        # Preencher o modelo com os nomes das colunas
-        for col in range(df.shape[1]):
-            header_item = QStandardItem(df.columns[col])
-            model.setHorizontalHeaderItem(col, header_item)
-
-        # Preencher o modelo com os valores das linhas
-        for row in range(df.shape[0]):
-            for col in range(df.shape[1]):
-                item = QStandardItem(str(df.iloc[row, col]))
-                model.setItem(row, col, item)
-        
-        self.treeView.setModel(model)
-        # Ajustar o tamanho das colunas automaticamente
-        self.treeView.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-    
-
 class JanelaFuncionarios(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, janela_principal):
         super().__init__()
         uic.loadUi("tabela_menu.ui", self)
+        self.pushButton.clicked.connect(janela_principal.abrir_janela_funcionarios)
+        self.pushButton_2.clicked.connect(janela_principal.abrir_janela_estoque)
+        self.pushButton_3.clicked.connect(janela_principal.sistema_caixa)
+
+        # Aqui você pode acessar os elementos da janela "tabela_menu.ui" normalmente
+        # Exemplo: self.treeView, self.pushButton, etc.
+
         empregados = loja.dados_funcionarios()
         df = pd.DataFrame(empregados)
 
-        # Criar o modelo de item
         model = QStandardItemModel()
         model.setColumnCount(df.shape[1])
 
-        # Preencher o modelo com os nomes das colunas
         for col in range(df.shape[1]):
             header_item = QStandardItem(df.columns[col])
             model.setHorizontalHeaderItem(col, header_item)
 
-        # Preencher o modelo com os valores das linhas
         for row in range(df.shape[0]):
             for col in range(df.shape[1]):
                 item = QStandardItem(str(df.iloc[row, col]))
                 model.setItem(row, col, item)
-        
+
+        model.itemChanged.connect(self.dados_alterados)  # Conexão do sinal itemChanged ao slot dados_alterados
         self.treeView.setModel(model)
-        # Ajustar o tamanho das colunas automaticamente
         self.treeView.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
     
+    def dados_alterados(self, item):
+        # Slot que é chamado quando um item é alterado no modelo
+        novo_valor = item.data(Qt.DisplayRole)  # Obtenha o novo valor do item
+        print(novo_valor)
+
+
+
+
+class JanelaEstoque(QtWidgets.QMainWindow):
+    def __init__(self, janela_principal):
+        super().__init__()
+        uic.loadUi("tabela_estoque.ui", self)
+        self.pushButton.clicked.connect(janela_principal.abrir_janela_funcionarios)
+        self.pushButton_2.clicked.connect(janela_principal.abrir_janela_estoque)
+        self.pushButton_3.clicked.connect(janela_principal.sistema_caixa)
+
+        # Aqui você pode acessar os elementos da janela "tabela_estoque.ui" normalmente
+        # Exemplo: self.treeView, self.pushButton, etc.
+
+        produtos = loja.estoque.produtos
+        df = pd.DataFrame(produtos)
+
+        model = QStandardItemModel()
+        model.setColumnCount(df.shape[1])
+
+        for col in range(df.shape[1]):
+            header_item = QStandardItem(df.columns[col])
+            model.setHorizontalHeaderItem(col, header_item)
+
+        for row in range(df.shape[0]):
+            for col in range(df.shape[1]):
+                item = QStandardItem(str(df.iloc[row, col]))
+                model.setItem(row, col, item)
+
+        self.treeView.setModel(model)
+        self.treeView.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 
 
 app = QtWidgets.QApplication([])
-janela_estoque = JanelaEstoque()
-janela_opcao = JanelaFuncionarios()
-janela_principal = JanelaMenu()  # Criar instância da janela principal
-formulario = JanelaLogin()
-formulario.show()
+janela_principal = JanelaPrincipal()
+janela_login = JanelaLogin()
+janela_login.show()
 app.exec()
