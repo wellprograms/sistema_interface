@@ -27,13 +27,20 @@ class Loja:
         self.operadora = None
 
     # Funcao inicial exibe o menu do sistema
-    def start_sistema(self):
-        print("""       MENU
-[01] FUNCIONARIOS
-[02] ESTOQUE 
-[03] INICIAR SISTEMA DE CAIXA
-[04] CONFIGS""")
-        print('-='*20)
+    def start_sistema(self, login, senha):
+        print('Faça login para iniciar o sistema.')
+        nome = "Wellyson"
+        login = login
+        senha = senha
+        for operador in self.operadores:
+            if nome == operador['nome'] and login == operador['login'] and senha == operador['senha']:
+                self.operadora = OperadorCaixa(operador['id_operador'],operador['nome'], operador['login'], operador['senha'])
+                print(f"Sistema iniciado com sucesso. Operadora: {self.operadora.nome}")
+                self.sistema = True
+                return True
+            else:
+                print('Username or password incorrect')
+
 
     """ Método pede para que o usuario escolha 1 opcao das apresentadas no método start_sistema
     e chama outro método da instancia baseado na escolha do usuário"""
@@ -180,17 +187,17 @@ class Loja:
     que recebe o metodo lista_operadores, se os dados inseridos forem correspondentes, o método atribui ao atributo operadora uma instancia da class
     OperadorCaixa, altera o atributo sistema para True, e retorna que o sistema foi iniciado"""
 
-    def acao_sistema_caixa(self):
+    def acao_sistema_caixa(self, login, senha):
         print('Faça login para iniciar o sistema.')
-        nome = input('nome: ')
-        login = input('login: ')
-        senha = input('senha: ')
+        nome = "Wellyson"
+        login = login
+        senha = senha
         for operador in self.operadores:
             if nome == operador['nome'] and login == operador['login'] and senha == operador['senha']:
                 self.operadora = OperadorCaixa(operador['id_operador'],operador['nome'], operador['login'], operador['senha'])
                 print(f"Sistema iniciado com sucesso. Operadora: {self.operadora.nome}")
                 self.sistema = True
-                self.passar_produto()
+                #self.passar_produto()
                 break
             else:
                 print('Username or password incorrect')
