@@ -2,7 +2,9 @@ from PyQt5 import uic, QtCore, QtWidgets
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
 from classes import *
+from caixa_janela import Janela_Caixa
 
+# 59, 37
 loja = Loja('Ascona', 'vila-sabrina')
 
 class JanelaPrincipal(QtWidgets.QMainWindow):
@@ -11,26 +13,33 @@ class JanelaPrincipal(QtWidgets.QMainWindow):
         uic.loadUi("janela_menu.ui", self)
         self.pushButton.clicked.connect(self.abrir_janela_funcionarios)
         self.pushButton_2.clicked.connect(self.abrir_janela_estoque)
-        self.pushButton_3.clicked.connect(self.sistema_caixa)
+        self.pushButton_3.clicked.connect(self.abrir_janela_caixa)
 
+        self.janela_caixa = None
         self.janela_funcionarios = None
         self.janela_estoque = None
 
-    def sistema_caixa(self):
-        pass
+    def abrir_janela_caixa(self):
+        if self.janela_funcionarios:
+            self.janela_funcionarios.close()
+        if self.janela_estoque:
+            self.janela_estoque.close()
+        self.hide()
+        self.janela_caixa = Janela_Caixa(self, loja)
+        self.janela_caixa.show()
 
     def abrir_janela_funcionarios(self):
         if self.janela_estoque:
             self.janela_estoque.close()
         self.hide()
-        self.janela_funcionarios = JanelaFuncionarios(janela_principal)
+        self.janela_funcionarios = JanelaFuncionarios(self)
         self.janela_funcionarios.show()
 
     def abrir_janela_estoque(self):
         if self.janela_funcionarios:
             self.janela_funcionarios.close()
         self.hide()
-        self.janela_estoque = JanelaEstoque(janela_principal)
+        self.janela_estoque = JanelaEstoque(self)
         self.janela_estoque.show()
 
 
@@ -65,7 +74,7 @@ class JanelaFuncionarios(QtWidgets.QMainWindow):
         uic.loadUi("tabela_menu.ui", self)
         self.pushButton.clicked.connect(janela_principal.abrir_janela_funcionarios)
         self.pushButton_2.clicked.connect(janela_principal.abrir_janela_estoque)
-        self.pushButton_3.clicked.connect(janela_principal.sistema_caixa)
+        self.pushButton_3.clicked.connect(janela_principal.abrir_janela_caixa)
 
         # Aqui você pode acessar os elementos da janela "tabela_menu.ui" normalmente
         # Exemplo: self.treeView, self.pushButton, etc.
@@ -95,15 +104,13 @@ class JanelaFuncionarios(QtWidgets.QMainWindow):
         print(novo_valor)
 
 
-
-
 class JanelaEstoque(QtWidgets.QMainWindow):
     def __init__(self, janela_principal):
         super().__init__()
         uic.loadUi("tabela_estoque.ui", self)
         self.pushButton.clicked.connect(janela_principal.abrir_janela_funcionarios)
         self.pushButton_2.clicked.connect(janela_principal.abrir_janela_estoque)
-        self.pushButton_3.clicked.connect(janela_principal.sistema_caixa)
+        self.pushButton_3.clicked.connect(janela_principal.abrir_janela_caixa)
 
         # Aqui você pode acessar os elementos da janela "tabela_estoque.ui" normalmente
         # Exemplo: self.treeView, self.pushButton, etc.
