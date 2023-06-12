@@ -1,4 +1,5 @@
 from PyQt5 import uic, QtCore, QtWidgets, QtGui
+from PyQt5.QtGui import QFont, QColor
 from message_boxe import MsgBoxe
 
 from classes import *
@@ -20,8 +21,26 @@ class Janela_Caixa(QtWidgets.QMainWindow):
         # Configurar as colunas da tabela
         self.table_model.setColumnCount(5)
         self.table_model.setHorizontalHeaderLabels(["Referência", "Modelo", "Gênero", "Quantidade", "Valor"])
-        self.tableView.setColumnWidth(0, 100)  # Definir largura da coluna "Referência" como 100 pixels
 
+            # Definir largura da coluna com base no número de caracteres
+        self.tableView.setColumnWidth(0, 35)  # Exemplo de largura fixa para a primeira coluna
+
+        # Calcular a largura das outras colunas com base no número de caracteres desejado
+        column_widths = [35, 27, 25, 35, 20]  # Exemplo de largura fixa para as outras colunas
+        for column, width in enumerate(column_widths):
+            # Converter largura em caracteres para pixels (aproximadamente)
+            font_metrics = self.tableView.fontMetrics()
+            character_width = font_metrics.averageCharWidth()
+            pixel_width = width * character_width
+
+            # Definir a largura da coluna em pixels
+            self.tableView.setColumnWidth(column, pixel_width)
+    
+        row_height = 30  # Exemplo de altura desejada para as linhas
+        self.tableView.verticalHeader().setDefaultSectionSize(row_height)
+        self.tableView.setShowGrid(False)
+
+        # Resto do código...
 
 
 
@@ -69,8 +88,8 @@ class Janela_Caixa(QtWidgets.QMainWindow):
                 if len(self.loja.compras_passadas):
                     ultimo_item = self.loja.compras_passadas[-1]
 
-                    info_formatada = f"    referencia: {ultimo_item['referencia']} modelo: {ultimo_item['modelo']} genero: {ultimo_item['genero']} quantidade: {ultimo_item['quantidade']}"\
-                                    f" valor: R${ultimo_item['valor']}"
+                    info_formatada = f"         {ultimo_item['modelo']}  {ultimo_item['genero']}  "\
+                                    f"R${ultimo_item['valor']}".upper()
                     self.label_3.setText(info_formatada)
                     # Criar os itens da tabela com as informações do produto
                     referencia_item = QtGui.QStandardItem(str(ultimo_item["referencia"]))
@@ -92,17 +111,42 @@ class Janela_Caixa(QtWidgets.QMainWindow):
         
     
     def limpar_tabela(self):
-        self.table_model.clear()
-        self.configurar_colunas_tabela()
+        row_count = self.table_model.rowCount()
+        self.table_model.removeRows(0, row_count)
         label = self.frame.findChild(QtWidgets.QLabel, "label_2")
         label_2 = self.label_3.setText("")
         label.setText("")
+
     
 
     def configurar_colunas_tabela(self):
+
+                    # Criar o modelo de tabela
+        self.table_model = QtGui.QStandardItemModel()
+        self.tableView.setModel(self.table_model)
+
+        # Configurar as colunas da tabela
         self.table_model.setColumnCount(5)
         self.table_model.setHorizontalHeaderLabels(["Referência", "Modelo", "Gênero", "Quantidade", "Valor"])
-        self.tableView.setColumnWidth(0, 100)  # Definir largura da coluna "Referência" como 100 pixels
+
+            # Definir largura da coluna com base no número de caracteres
+        self.tableView.setColumnWidth(0, 35)  # Exemplo de largura fixa para a primeira coluna
+
+        # Calcular a largura das outras colunas com base no número de caracteres desejado
+        column_widths = [35, 27, 25, 35, 20]  # Exemplo de largura fixa para as outras colunas
+        for column, width in enumerate(column_widths):
+            # Converter largura em caracteres para pixels (aproximadamente)
+            font_metrics = self.tableView.fontMetrics()
+            character_width = font_metrics.averageCharWidth()
+            pixel_width = width * character_width
+
+            # Definir a largura da coluna em pixels
+            self.tableView.setColumnWidth(column, pixel_width)
+    
+        row_height = 30  # Exemplo de altura desejada para as linhas
+        self.tableView.verticalHeader().setDefaultSectionSize(row_height)
+        self.tableView.setShowGrid(False)
+        
 
 
     def msg_box(self):

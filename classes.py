@@ -61,12 +61,11 @@ class Loja:
             return
 
 
-    """Método chama o método dados_produtos da class Estoque que retorna uma lista e exibe um dataframe dos produtos existentes no banco de dados.
+    def acao_estoque(self):
+            """Método chama o método dados_produtos da class Estoque que retorna uma lista e exibe um dataframe dos produtos existentes no banco de dados.
     O Método tambem pede uma acao do usuario, e com base na acao do usuario Altera, Exclui, ou Adiciona novos produtos no banco de dados
     utilizando os métodos da Class Estoque, o usuario tambem tem a escolha de voltar ao menu inicial, que chama os métodos start_sistema e
     opcao_menu"""
-    def acao_estoque(self):
-        while True:
             acao = input('Deseja visualizar/modificar algum produto? (sim/não): ')
             if acao.lower() == "sim":
                 self.estoque.dados_produtos()
@@ -372,9 +371,7 @@ class Funcionario(Loja):
             print("Operador de caixa adicionado com sucesso.")
         else:
             print("A função do funcionário não é Caixa. Não é possível adicionar como operador de caixa.")
-    
-
-        
+     
     
 class Estoque(Loja):
     def __init__(self):

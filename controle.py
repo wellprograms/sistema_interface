@@ -11,6 +11,7 @@ class JanelaPrincipal(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("janela_menu.ui", self)
+        
         self.pushButton.clicked.connect(self.abrir_janela_funcionarios)
         self.pushButton_2.clicked.connect(self.abrir_janela_estoque)
         self.pushButton_3.clicked.connect(self.abrir_janela_caixa)
