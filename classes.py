@@ -10,7 +10,7 @@ class Loja:
     conexao = mysql.connector.connect(
     host='localhost',  # Endereço do servidor do banco de dados
     user='root',  # Nome de usuário do banco de dados
-    password='well97',  # Senha do banco de dados
+    password='Wellyson-0',  # Senha do banco de dados
     database='db_sistema'  # Nome do banco de dados
     )
     # Atributos:
@@ -58,127 +58,7 @@ class Loja:
         elif opcao == 3:
             self.acao_sistema_caixa()
         else:
-            return
-
-
-    def acao_estoque(self):
-            """Método chama o método dados_produtos da class Estoque que retorna uma lista e exibe um dataframe dos produtos existentes no banco de dados.
-    O Método tambem pede uma acao do usuario, e com base na acao do usuario Altera, Exclui, ou Adiciona novos produtos no banco de dados
-    utilizando os métodos da Class Estoque, o usuario tambem tem a escolha de voltar ao menu inicial, que chama os métodos start_sistema e
-    opcao_menu"""
-            acao = input('Deseja visualizar/modificar algum produto? (sim/não): ')
-            if acao.lower() == "sim":
-                self.estoque.dados_produtos()
-                produtos_estoque = self.estoque.produtos
-                df = pd.DataFrame(produtos_estoque)
-                print(df)
-                print()
-                acao = int(input('[1] Alterar produto\n[2] Excluir produto\n[3] Adicionar produto\n[4] Voltar ao menu principal: '))
-
-                if acao == 1:
-                    alteracao = input('Qual produto deseja alterar? ')
-
-                    for produto in produtos_estoque:
-                        if produto['modelo'] == alteracao:
-                            acao_alterar = int(input(f'O que deseja alterar no produto {produto["modelo"]}?\n'
-                                                    '[1] Modelo\n[2] Gênero\n[3] Quantidade\n[4] Valor\n'
-                                                    '[5] Voltar ao menu anterior: '))
-                            
-                            if acao_alterar == 1:
-                                modelo_att = input('Digite o modelo atualizado: ')
-                                produto['modelo'] = modelo_att
-                                self.estoque.alterar_produtos("modelo", alteracao, modelo_att)
-                                print('Modelo atualizado.')
-
-                            elif acao_alterar == 2:
-                                genero_att = input('Digite o gênero atualizado: ')
-                                produto['genero'] = genero_att
-                                self.estoque.alterar_produtos("genero", alteracao, genero_att)
-                                print('Gênero atualizado.')
-
-                            elif acao_alterar == 3:
-                                quantidade_att = int(input('Digite a quantidade atualizada: '))
-                                produto['quantidade'] = quantidade_att
-                                self.estoque.alterar_produtos("quantidade", alteracao, quantidade_att)
-                                print('Quantidade atualizada.')
-
-                            elif acao_alterar == 4:
-                                valor_att = float(input('Digite o valor atualizado: '))
-                                produto['valor'] = valor_att
-                                self.estoque.alterar_produtos("valor", alteracao, valor_att)
-                                print('Valor atualizado.')
-
-                            elif acao_alterar == 5:
-                                break
-            
-                elif acao == 2:
-                    excluir = input('Qual produto deseja excluir?')
-                    self.estoque.excluir_produtos(excluir)
-                    self.acao_estoque()
-                    return
-
-                elif acao == 3:
-                    self.estoque.adicionar_produtos()
-
-                elif acao == 4:
-                    self.start_sistema()
-                    self.opcao_menu()
-                else:
-                    return
-
-
-    """Método recebe o método dados_funcionarios que retorna uma lista e exibe um dataframe dos funcionarios existentes no banco de dados.
-    O método tambem pede uma acao do usuario, e com base na acao do usuario, Altera informacoes ou Adiciona funcionarios ao banco de dados.
-    O método só permite uma alteracao especifica de funcionario por vez, sendo necessario chamar o método novamente para cada alteracao.
-    O usuario também tem a escolha de retornar ao menu inicial, que chama os métodos start_sistema, e opcao_menu.
-    """
-    def acao_funcionarios(self):
-        membros = self.dados_funcionarios()
-        df = pd.DataFrame(membros)
-        print(df)
-        print()
-        acao = int(input('[1] Alterar funcionario\n[2] Adicionar funcionario\n[3] Retornar ao menu anterior'))
-        if acao == 1:
-            alteracao = input('Qual funcionario deseja alterar?')
-            for funcionario in membros:
-                if funcionario['nome'] == alteracao:
-                    acao = int(input(f'Oque deseja alterar no funcionario {funcionario["nome"]}?\n[01]Nome\n[02]Salario\n[03]Função'))
-                    if acao == 1:
-                        nome_att = input('Digite o nome atualizado.')
-                        funcionario['nome'] = nome_att
-                        print('nome atualizado')
-                        self.gerenciar_funcionarios("nome",alteracao, nome_att)
-                        print('Alteracao realizada com sucesso.')
-                        self.acao_funcionarios()
-                        return
-                    
-                    elif acao == 2:
-                        salario_att = float(input('Digite o salário atualizado'))
-                        funcionario['salario'] = salario_att
-                        print('salario atualizado')
-                        self.gerenciar_funcionarios("salario",alteracao, salario_att)
-                        self.acao_funcionarios()
-                        return
-
-                    elif acao == 3:
-                        funcao_att = input('Digite a funcao atualizada: ')
-                        funcionario['funcao'] = funcao_att
-                        print('Funcao atuaizada')
-                        self.gerenciar_funcionarios("funcao", alteracao, funcao_att)
-                        self.acao_funcionarios()
-                        return
-                        
-
-        elif acao == 2:
-            nome = input('Nome funcionario: ')
-            funcao = input('Funcao funcionario')
-            salario = Decimal(str(input('Salario')))
-            loja_id = 1
-            self.adicionar_funcionario(Funcionario(nome, funcao, salario, loja_id))
-            self.acao_funcionarios()
-        elif acao == 3:
-            self.start_sistema()
-            self.opcao_menu()
+            return                        
         
 
     """Método é basicamente um login, onde o usuário preenche as informacoes, e o método verifica atraves do atributo da instancia operadores
@@ -186,10 +66,14 @@ class Loja:
     OperadorCaixa, altera o atributo sistema para True, e retorna que o sistema foi iniciado"""
 
     def acao_sistema_caixa(self, login, senha):
+        # Método para iniciar o sistema de caixa através do login feito pelo usuário, se tiver permissao de operador de caixa ou adm, inicia.
+        # O self.operadora passa a receber uma instancia do objeto OperadorCaixa.
         print('Faça login para iniciar o sistema.')
         nome = "Wellyson"
         login = login
         senha = senha
+        """Percorre a lista de operadores que existe no banco de dados e compara com o login que o usuario inseriu
+        se igual, o sistema do caixa passa a ser True e habilitado para o método passar_produto."""
         for operador in self.operadores:
             if nome == operador['nome'] and login == operador['login'] and senha == operador['senha']:
                 self.operadora = OperadorCaixa(operador['id_operador'],operador['nome'], operador['login'], operador['senha'])
@@ -203,6 +87,7 @@ class Loja:
                 
 
     def pegar_idcompra(self):
+        """Pega o ultimo id_compra que existe na tabela dentro do banco de dados e retorna ele + 1."""
         cursor = self.conexao.cursor()
         cursor.execute("SELECT MAX(id_compra) FROM vendas")
         resultado = cursor.fetchone()
@@ -216,6 +101,11 @@ class Loja:
 
 
     def passar_produto(self, cod):
+        """Verifica se o sistema está habilitado para esse método, em seguida percorre a lista de compras passadas e compara se o produto passado
+        ja existe nessa lista, se ja existir , o produto recebe +1 na quantidade, e soma o valor ao atributo total_compras, alem disso, tambem
+        transforma a variavel produto_encontrado em True, se o produto for inexistente, tanto na lista de compras passadas, quanto na tabela
+        existente no banco de dados, o método retorna False"""
+
         if not self.sistema:
             print('ERRO! Login nao efetuado.')
             return
@@ -229,7 +119,7 @@ class Loja:
                 produto_encontrado = True
                 break
         
-
+        # Percorre a tabela produtos do banco de dados atrás do produto passado.
         if not produto_encontrado:
             for produto in self.estoque.produtos:
                 if cod == produto['referencia']:
@@ -248,6 +138,11 @@ class Loja:
 
     
     def finalizar_compras(self):
+
+        """Método inseri na tabela vendas, o id_compra, id_operador, e id_vendedor ja obtidos em métodos anteriors
+        em seguida, o método adiciona produto por produto na tabela produtos_venda do banco de dados, o método tambem
+        é encarregado da limpeza dos atributos, retornando aos valores iniciais da instancia
+        Método retorna um erro relacionado ao banco de dados, valores passados errados."""
         cursor = self.conexao.cursor()
         id_compra = self.pegar_idcompra()
         operador_id = self.operadora.id_operador
@@ -285,6 +180,7 @@ class Loja:
 
 
     def inserir_dados_loja(self):
+        """Método de insersão de dados sobre a loja no banco de dados ."""
         cursor = Loja.conexao.cursor()
         sql = f'INSERT INTO loja_dados(nome_loja, end_loja) VALUES ("{self.nome}", "{self.endereço}")'
         cursor.execute(sql)
@@ -301,6 +197,7 @@ class Loja:
         
 
     def gerenciar_funcionarios(self, coluna, atual, novo):
+        """Método utilizado pra alterar informacoes dos funcionarios ja cadastrados no banco de dados."""
         cursor = Loja.conexao.cursor()
         sql = f"UPDATE funcionarios SET {coluna} = %s WHERE nome = %s"
         cursor.execute(sql, (novo, atual))
@@ -309,6 +206,7 @@ class Loja:
 
 
     def dados_funcionarios(self):
+        """Método retorna uma lista de todos os funcionarios(nome,funcao,salario) cadastrado na tabela no banco de dados."""
         print('-='*30)
         cursor = Loja.conexao.cursor()
         sql = "SELECT nome, funcao, salario FROM funcionarios"
@@ -341,6 +239,12 @@ class Loja:
 
 
 class Funcionario(Loja):
+    """Método utilizado para facilitar a inserção e manipulação da tabela funcionarios do Banco De Dados.
+    recebe como parametros:
+    :nome
+    :funcao
+    :salario
+    :loja id"""
     def __init__(self, nome, funcao, salario, loja_id):
         self.salario = salario
         self.nome = nome
@@ -348,6 +252,8 @@ class Funcionario(Loja):
         self.loja_id = loja_id
 
     def add_funcionario(self):
+        """Método adiciona um funcionario novo na tabela do Banco de dados. Método utiliza os atributos da instancia ja cadastrados
+        método também retorna o funcionario_id"""
         cursor = self.conexao.cursor()
         add_funcionario_query = """
     INSERT INTO funcionarios (nome, funcao, salario, loja_id)
@@ -359,6 +265,9 @@ class Funcionario(Loja):
         return funcionario_id
     
     def add_operador_caixa(self, login, senha, funcionario_id):
+        """Método verifica a funcao do funcionario ja instanciado
+        se a funcao for de caixa, método insere em uma tabela específica de operadora
+        de caixa além de continuar existindo na tabela funcionarios"""
         if self.funcao == "Caixa":
             cursor = self.conexao.cursor()
             add_operador_caixa_query = """
@@ -374,12 +283,15 @@ class Funcionario(Loja):
      
     
 class Estoque(Loja):
+    """Gerenciamento do estoque dentro do banco de dados. 
+    Método oferece recursos pra adicionar, remover, alterar produtos dentro do banco de dados."""
     def __init__(self):
         self.produtos = []
         self.dados_produtos()
 
     
     def dados_produtos(self):
+        """Método retorna uma lista de produtos ja cadastrados no banco de dados"""
         print('-='*30)
         cursor = self.conexao.cursor()
         sql = "SELECT referencia, modelo, genero, quantidade, valor FROM produtos"
@@ -397,12 +309,8 @@ class Estoque(Loja):
         self.produtos = lista_dici
 
 
-    def adicionar_produtos(self):
-        referencia = int(input('referencia: '))
-        modelo = input('modelo: ')
-        genero = input('genero: ')
-        quantidade = int(input('quantidade: '))
-        valor = float(input('valor: '))
+    def adicionar_produtos(self,referencia,modelo,genero,quantidade,valor):
+        """Método adiciona produto ao banco de dados."""
         valores = (referencia, modelo, genero, quantidade, valor)
         cursor = self.conexao.cursor()
         sql = 'INSERT INTO produtos(referencia, modelo, genero, quantidade, valor) VALUES (%s, %s, %s, %s, %s)'
@@ -410,14 +318,24 @@ class Estoque(Loja):
         self.conexao.commit()
         return
 
-    def alterar_produtos(self, coluna, atual, novo):
+    def alterar_produtos(self, referencia, valor1, valor2, valor3, valor4):
+        """Método altera produtos dentro do banco de dados."""
         cursor = self.conexao.cursor()
-        sql = f"UPDATE produtos SET {coluna} = %s WHERE modelo = %s"
-        cursor.execute(sql, (novo, atual))
-        self.conexao.commit()
+        
+        try:
+            # Monta a query de atualização para as colunas desejadas
+            sql = "UPDATE produtos SET modelo = %s, genero = %s, quantidade = %s, valor = %s WHERE referencia = %s"
+            cursor.execute(sql, (valor1, valor2, valor3, valor4, referencia))
+
+            self.conexao.commit()
+        except Exception as erro:
+            print(erro)
         return
+
+
     
     def excluir_produtos(self, produto):
+        """Método exclui produtos dentro do banco de dados"""
         cursor = self.conexao.cursor()
         sql = f"DELETE FROM produtos WHERE referencia = %s"
         valor = produto
@@ -426,6 +344,7 @@ class Estoque(Loja):
         return
 
     def diminuir_quantidade(self, referencia, quantidade):
+        """Método diminui quantidade de produto determinado pelo usuário dentro do banco de dados."""
         cursor = self.conexao.cursor()
         sql = f"UPDATE produtos SET quantidade = quantidade - {quantidade} WHERE referencia = {referencia}"
         cursor.execute(sql)
@@ -433,6 +352,7 @@ class Estoque(Loja):
 
     
 class OperadorCaixa(Loja):
+    """Classe criada com o intuito de facilitar a manipulacao dentro do banco de dados"""
     def __init__(self, id_operador, nome, login, senha):
         self.produtos_passados = []
         self.nome = nome

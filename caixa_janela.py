@@ -6,7 +6,8 @@ from classes import *
 
 
 class Janela_Caixa(QtWidgets.QMainWindow):
-    def __init__(self, janela_principal, loja):
+    
+    def __init__(self,janela_principal, loja):
         super().__init__()
         uic.loadUi("janela_caixa.ui", self)
         self.loja = loja
@@ -41,7 +42,6 @@ class Janela_Caixa(QtWidgets.QMainWindow):
         self.tableView.setShowGrid(False)
 
         # Resto do código...
-
 
 
     def passar_compras(self):
@@ -107,7 +107,6 @@ class Janela_Caixa(QtWidgets.QMainWindow):
                     self.table_model.setItem(row, 4, valor_item)
                     label = self.frame.findChild(QtWidgets.QLabel, "label_2")
                     label.setText(f"TOTAL: R${self.loja.total_compras}")
-
         
     
     def limpar_tabela(self):
@@ -118,7 +117,6 @@ class Janela_Caixa(QtWidgets.QMainWindow):
         label.setText("")
 
     
-
     def configurar_colunas_tabela(self):
 
                     # Criar o modelo de tabela
@@ -147,7 +145,6 @@ class Janela_Caixa(QtWidgets.QMainWindow):
         self.tableView.verticalHeader().setDefaultSectionSize(row_height)
         self.tableView.setShowGrid(False)
         
-
 
     def msg_box(self):
         if self.tableView.model().rowCount() != 0:

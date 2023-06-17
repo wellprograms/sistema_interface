@@ -14,40 +14,23 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255)
-</string>
+   <string notr="true">background-color: rgb(195, 195, 195)</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">color : rgb(195, 195, 195)</string>
    </property>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>401</width>
-      <height>181</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>asconakids.png.jpg</pixmap>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>10</x>
       <y>10</y>
-      <width>221</width>
-      <height>41</height>
+      <width>201</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 0, 255); color:#ffffff; 
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
 font: 20pt &quot;a Aha Wow&quot;;
 </string>
     </property>
@@ -58,14 +41,14 @@ font: 20pt &quot;a Aha Wow&quot;;
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>70</y>
-      <width>221</width>
-      <height>41</height>
+      <x>230</x>
+      <y>10</y>
+      <width>161</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 85, 0); color:#ffffff; 
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
 font: 20pt &quot;a Aha Wow&quot;;
 </string>
     </property>
@@ -76,14 +59,14 @@ font: 20pt &quot;a Aha Wow&quot;;
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>130</y>
+      <x>410</x>
+      <y>10</y>
       <width>221</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 0); color:#ffffff; 
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
 font: 20pt &quot;a Aha Wow&quot;;
 </string>
     </property>
@@ -94,14 +77,14 @@ font: 20pt &quot;a Aha Wow&quot;;
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>190</y>
-      <width>221</width>
-      <height>41</height>
+      <x>650</x>
+      <y>10</y>
+      <width>181</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 255); color:#ffffff; 
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
 font: 20pt &quot;a Aha Wow&quot;;
 </string>
     </property>
@@ -112,8 +95,8 @@ font: 20pt &quot;a Aha Wow&quot;;
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>250</y>
+      <x>250</x>
+      <y>60</y>
       <width>541</width>
       <height>51</height>
      </rect>
@@ -128,15 +111,72 @@ font: 20pt &quot;a Aha Wow&quot;;
    <widget class="QTreeView" name="treeView">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>300</y>
-      <width>631</width>
+      <x>80</x>
+      <y>110</y>
+      <width>671</width>
       <height>251</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 0, 0);
-font: 16pt &quot;a Aha Wow&quot;;</string>
+font: 12pt &quot;a Aha Wow&quot;;</string>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>440</y>
+      <width>311</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
+font: 20pt &quot;a Aha Wow&quot;;
+</string>
+    </property>
+    <property name="text">
+     <string>ADICIONAR PRODUTOS</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>440</y>
+      <width>311</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
+font: 20pt &quot;a Aha Wow&quot;;
+</string>
+    </property>
+    <property name="text">
+     <string>ALTERAR PRODUTOS</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>500</y>
+      <width>311</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(74, 74, 74); color:#ffffff; 
+font: 20pt &quot;a Aha Wow&quot;;
+</string>
+    </property>
+    <property name="text">
+     <string>CONSULTAR PRODUTOS</string>
     </property>
    </widget>
   </widget>

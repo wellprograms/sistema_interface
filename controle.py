@@ -1,12 +1,16 @@
 from PyQt5 import uic, QtCore, QtWidgets
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 from classes import *
 from caixa_janela import Janela_Caixa
+from cadastro_janela import CadastroJanela
+from janela_atualizar import AtualizarJanela
 
 # 59, 37
 loja = Loja('Ascona', 'vila-sabrina')
 
+# Janela que recebe os eventos
 class JanelaPrincipal(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -19,6 +23,8 @@ class JanelaPrincipal(QtWidgets.QMainWindow):
         self.janela_caixa = None
         self.janela_funcionarios = None
         self.janela_estoque = None
+        self.janela_cadasro = None
+        self.janela_atualizar = None
 
     def abrir_janela_caixa(self):
         if self.janela_funcionarios:
@@ -28,6 +34,22 @@ class JanelaPrincipal(QtWidgets.QMainWindow):
         self.hide()
         self.janela_caixa = Janela_Caixa(self, loja)
         self.janela_caixa.show()
+    
+    def abrir_janela_atualizar(self):
+        if self.janela_funcionarios:
+            self.janela_funcionarios.close()
+        if self.janela_estoque:
+            self.janela_estoque.close()
+        self.janela_atualizar = AtualizarJanela(janela_principal, loja)
+        self.janela_atualizar.show()
+        
+    def abrir_janela_cadastro(self):
+        if self.janela_funcionarios:
+            self.janela_funcionarios.close()
+        if self.janela_estoque:
+            self.janela_estoque.close()
+        self.janela_produtos = CadastroJanela(janela_principal,loja)
+        a = self.janela_produtos.show()
 
     def abrir_janela_funcionarios(self):
         if self.janela_estoque:
@@ -43,7 +65,7 @@ class JanelaPrincipal(QtWidgets.QMainWindow):
         self.janela_estoque = JanelaEstoque(self)
         self.janela_estoque.show()
 
-
+# Janela para iniciar o programa a partir do login. 
 class JanelaLogin(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -68,7 +90,7 @@ class JanelaLogin(QtWidgets.QMainWindow):
             # Executar ação desejada, como chamar fazer_login
             self.fazer_login()
 
-
+# Janela para adicionar/excluir/ver funcionarios
 class JanelaFuncionarios(QtWidgets.QMainWindow):
     def __init__(self, janela_principal):
         super().__init__()
@@ -112,6 +134,8 @@ class JanelaEstoque(QtWidgets.QMainWindow):
         self.pushButton.clicked.connect(janela_principal.abrir_janela_funcionarios)
         self.pushButton_2.clicked.connect(janela_principal.abrir_janela_estoque)
         self.pushButton_3.clicked.connect(janela_principal.abrir_janela_caixa)
+        self.pushButton_5.clicked.connect(janela_principal.abrir_janela_cadastro)
+        self.pushButton_6.clicked.connect(janela_principal.abrir_janela_atualizar)
 
         # Aqui você pode acessar os elementos da janela "tabela_estoque.ui" normalmente
         # Exemplo: self.treeView, self.pushButton, etc.
